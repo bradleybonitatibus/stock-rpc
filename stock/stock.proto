@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package quote;
+
+option go_package = "stockpb";
+
+message StockQuoteRequest {
+    string symbol = 1;
+}
+
+// TimeSeriesData contians the data returned from the AlphaVantage API
+message TimeSeriesData {
+    string date = 1;
+    float open = 2;
+    float high = 3;
+    float low = 4;
+    float close = 5;
+    int64 volume = 6;  
+}
+
+// StockQuoteResponse returns a single data point for the current stock price 
+message StockQuoteResponse {
+    string symbol = 1;
+    TimeSeriesData data = 2;
+    float previousClose = 3;
+}
+
+
+// TimeSeriers RPC Request definition
+message TimeSeriesRequest {
+    string symbol = 1;
+    enum TimeResolution {
+        DAILY = 0;
+        WEEKLY = 1;
+        MONTHLY = 2;
+    }
+}
+
+// TimeSeriesResponse returns the symbol name and returns a 
+// repeated TimeSeriesData property
+message TimeSeriesResponseStream {
+    TimeSeriesData data = 1;
+}
+
+message TimeSeriesResponse {
+    repeated TimeSeriesData data = 1;
+}
+
+// StockService defines the available methods on the service
+service StockService {
+    rpc Quote (StockQuoteRequest) returns (StockQuoteResponse);
+    rpc GetTimeSeriesData (TimeSeriesRequest) returns (TimeSeriesResponse);
+    rpc GetTimeSeriesDataStream (TimeSeriesRequest) returns (stream TimeSeriesResponseStream);
+
+}

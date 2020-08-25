@@ -1,0 +1,1 @@
+protoc stock/stock.proto --go_out=plugins=grpc:.
